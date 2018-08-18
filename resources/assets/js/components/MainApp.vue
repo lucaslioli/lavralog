@@ -29,12 +29,12 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="currentUser"></v-toolbar-side-icon>
       <v-toolbar-title>Lavralog</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
+      <v-toolbar-items>
         
         <template v-if="!currentUser">
           
           <v-btn flat>
-            <router-link to="/login">Entrar</router-link>
+            <router-link to="/login" >Entrar</router-link>
           </v-btn>
           <v-btn flat>
             <router-link to="/register">Cadastre-se</router-link>
@@ -84,3 +84,9 @@
     }
   }
 </script>
+<style scoped>
+  .v-btn__content a {
+    text-decoration: none;
+    color: #fff;
+  }
+</style>
