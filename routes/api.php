@@ -39,9 +39,26 @@ Route::group(['prefix' => 'lavoura'], function ($router) {
 
 });
 
+Route::group(['prefix' => 'safra'], function ($router) {
+
+    Route::get('lavoura/{lavoura}', 'SafraController@index');
+    Route::post('store', 'SafraController@store');
+    Route::get('{safra}', 'SafraController@show');
+    Route::put('{safra}', 'SafraController@update');
+    Route::delete('{safra}', 'SafraController@destroy');
+
+});
+
 Route::group(['prefix' => 'unidade'], function ($router) {
 
     Route::get('', 'UnidadeController@index');
     Route::get('{unidade}', 'UnidadeController@show');
+
+});
+
+Route::group(['prefix' => 'insumo_tipo'], function ($router){
+
+    Route::get('',  'InsumoTipoController@index');
+    Route::get('{insumo_tipo}', 'InsumoTipoController@show');
 
 });
