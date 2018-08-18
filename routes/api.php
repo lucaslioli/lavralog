@@ -27,3 +27,9 @@ Route::group(['prefix' => 'lavoura'], function ($router) {
     Route::delete('{lavoura}', 'LavouraController@destroy');
 
 });
+
+Route::group(['prefix' => 'unidade'], function ($router) {
+
+    Route::get('{unidade}', 'UnidadeController');
+
+});
