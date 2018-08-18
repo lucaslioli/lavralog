@@ -47,6 +47,8 @@ Route::group(['prefix' => 'safra'], function ($router) {
     Route::put('{safra}', 'SafraController@update');
     Route::delete('{safra}', 'SafraController@destroy');
 
+    Route::get('insumos/{safra}', 'SafraController@insumos');
+
 });
 
 Route::group(['prefix' => 'unidade'], function ($router) {
@@ -67,5 +69,7 @@ Route::group(['prefix' => 'insumo'], function ($router){
 
     Route::get('', 'InsumoController@index');
     Route::post('store', 'InsumoController@store');
+
+    Route::get('safra/{insumo}', 'InsumoController@safras');
 
 });

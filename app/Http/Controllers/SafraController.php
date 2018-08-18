@@ -89,4 +89,8 @@ class SafraController extends Controller
 
         return response()->json('Safra deletada com sucesso!');
     }
+
+    public function insumos(Safra $safra){
+        return response()->json($safra->insumos);
+    }
 }
