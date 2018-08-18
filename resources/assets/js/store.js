@@ -9,7 +9,9 @@ export default {
     isLoggedIn: !!user,
     loading: false,
     auth_error: null,
-    myHarvests: []
+    myHarvests: [],
+    safras: [],
+    units: []
   },
   getters: {
     welcome(state) {
@@ -17,6 +19,12 @@ export default {
     },
     myHarvests(state) {
       return state.myHarvests
+    },
+    units(state) {
+      return state.units
+    },
+    safras(state) {
+      return state.safras
     },
     isLoading(state) {
       return state.loading
@@ -44,11 +52,27 @@ export default {
       state.loading = true
       state.auth_error = null
     },
+    registerSafra(state) {
+      state.loading = true
+      state.auth_error = null
+    },
     updateHarvest(state) {
       state.loading = true
       state.auth_error = null
     },
+    updateSafra(state) {
+      state.loading = true
+      state.auth_error = null
+    },
     getMyHarvests(state) {
+      state.loading = true
+      state.auth_error = null
+    },
+    getSafras(state) {
+      state.loading = true
+      state.auth_error = null
+    },
+    getUnits(state) {
       state.loading = true
       state.auth_error = null
     },
@@ -70,16 +94,37 @@ export default {
       state.auth_error = null
       state.myHarvests = [ ...state.myHarvests, payload.lavoura ? payload.lavoura : '' ]
     },
+    registerSuccessSafras(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.safras = [ ...state.safras, payload.safra ? payload.safra : '' ]
+    },
+
     updateSuccessHarvest(state, payload) {
       state.loading = false
       state.auth_error = null
       state.myHarvests = [ ...state.myHarvests.filter(i => i.id !== payload.lavoura.id), payload.lavoura ]
     },
+    updateSuccessSafra(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.safras = [ ...state.safras.filter(i => i.id !== payload.safra.id), payload.safra ]
+    },
 
     getMyHarvestsSuccess(state, payload) {
       state.loading = false
       state.auth_error = null
-      state.myHarvests = [...state.myHarvests, ...payload]
+      state.myHarvests = [ ...payload]
+    },
+    getSuccessUnit(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.units = [ ...state.units, payload.unidades ? payload.unidades : null ]
+    },
+    getSuccessSafra(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.safras = payload
     },
 
     loginFailed(state, payload) {
@@ -94,11 +139,27 @@ export default {
       state.loading = false
       state.auth_error = payload.error
     },
+    registerSafraFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
     updateHarvestFailed(state, payload) {
       state.loading = false
       state.auth_error = payload.error
     },
+    updateSafraFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
     getMyHarvestsFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
+    getUnitsFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
+    getSafraFailed(state, payload) {
       state.loading = false
       state.auth_error = payload.error
     },
@@ -126,8 +187,24 @@ export default {
       context.commit("updateHarvest")
     },
 
+    registerSafra(context) {
+      context.commit("registerSafra")
+    },
+
+    updateSafra(context) {
+      context.commit("updateSafra")
+    },
+
     getMyHarvests(context){
       context.commit("getMyHarvests")
+    },
+
+    getUnits(context){
+      context.commit("getUnits")
+    },
+
+    getSafras(context){
+      context.commit("getSafras")
     }
   }
 }

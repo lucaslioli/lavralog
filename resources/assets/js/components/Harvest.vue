@@ -2,36 +2,45 @@
   <v-container fluid fill-height>
     <v-layout align-space-between column>
       
-      <h6 class="headline text-xs-center myLavouras"> Minhas Lavouras </h6>
+      <h6 class="headline text-xs-center myLavouras"> Lavoura {{currentHarvest.titulo}} </h6>
       <br>
       
-      <v-layout v-for="(harvest, key) in myHarvests" :key=key>
-        <v-flex xs12 class="pa-2">
-          <v-card>
-            <v-card-title primary-title>
-              <v-flex column>
-                <div>
-                  <h3 class="headline mb-0">{{harvest.titulo}}</h3>
-                </div>
-                <div>
-                  <h6 class="subheading mb-0"><b>Área:</b> {{harvest.area}} hectares</h6>
-                </div>
-              </v-flex>
-            </v-card-title>
-            <v-card-actions>
-              <v-btn flat color="green" @click="accessHarvest(harvest)">Acessar</v-btn>
-              <v-btn flat color="orange" @click="editHarvest(harvest)">Editar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
+      <template v-if="mySafras.length">
+        <v-layout v-for="(safra, key) in mySafras" :key=key>
+          <v-flex xs12 class="pa-2">
+            <v-card>
+              <v-card-title primary-title>
+                <v-flex column>
+                  <div>
+                    <h3 class="headline mb-0">{{safra.ano}}</h3>
+                  </div>
+                  <div>
+                    <h6 class="subheading mb-0"><b>Cultura:</b> {{safra.cultura}}</h6>
+                  </div>
+                  <div>
+                    <h6 class="subheading mb-0"><b>Unidade:</b> {{safra}}</h6>
+                  </div>
+                </v-flex>
+              </v-card-title>
+              <v-card-actions>
+                <!--<v-btn flat color="green" @click="">Acessar</v-btn>-->
+                <v-btn flat color="orange" @click="editSafra(safra)">Editar</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </template>
+      <template v-else>
+        <h6 class="headline text-xs-center myLavouras"> Nenhuma Safra cadastrada para esta lavoura</h6>
+      </template>
+      
       
       <v-content>
         <v-container fill-height align-center justify-center>
           <div id="lateral">
             <v-fab-transition>
               <v-btn
-                @click.stop="addHarvest"
+                @click.stop="addSafra"
                 color="amber darken-1"
                 v-model="fab"
                 dark
@@ -57,23 +66,23 @@
               <h3 class="headline mb-0">{{modalTitle}}</h3>
             </v-card-title>
             <div class="pa-2">
-              <v-form v-model="valid" @submit.prevent="editModal ? updateHarvest() : registerHarvest()">
+              <v-form v-model="valid" @submit.prevent="editModal ? updateSafra() : registerSafra()">
                 <v-text-field
-                  v-model="addHarvestForm.titulo"
-                  :rules="addHarvestForm.tituloRules"
-                  label="Titulo da Lavoura"
+                  v-model="addSafraForm.titulo"
+                  :rules="addSafraForm.tituloRules"
+                  label="Titulo da Safra"
                   required
                 ></v-text-field>
                 <v-text-field
-                  v-model="addHarvestForm.descricao"
-                  label="Descrição da Lavoura"
-                  :rules="addHarvestForm.descricaoRules"
+                  v-model="addSafraForm.ano"
+                  label="Ano da Safra"
+                  :rules="addSafraForm.anoRules"
                   required
                 ></v-text-field>
                 <v-text-field
-                  v-model="addHarvestForm.area"
-                  label="Área da Lavoura"
-                  :rules="addHarvestForm.areaRules"
+                  v-model="addSafraForm.unit"
+                  label="Unidade de medida da Produção"
+                  :rules="addSafraForm.unitRules"
                   required
                 ></v-text-field>
                 <v-btn
@@ -94,7 +103,7 @@
 </template>
 
 <script>
-  import {getMyHarvests, storeHarvest, updateHarvest} from '../helpers/harvest'
+  import {getMySafras, storeSafra, updateSafra} from '../helpers/safra'
 
   export default {
     
@@ -105,7 +114,7 @@
       editModal: false,
       modalTitle: 'Cadastrar uma Lavoura',
       valid: false,
-      addHarvestForm: {
+      addSafraForm: {
         titulo: '',
         tituloRules: [
           v => !!v || 'O campo titulo é obrigatório',
@@ -121,72 +130,72 @@
       }
     }),
     computed: {
-      myHarvests() {
-        return this.$store.getters.myHarvests
+      mySafras() {
+        return this.$store.getters.safras
       },
       currentUser(){
         return this.$store.getters.currentUser
+      },
+      currentHarvest(){
+        return this.$store.getters.myHarvests.filter(i => i.id == this.$route.params.id)[0]
       }
     },
     methods: {
       cleanForm(){
-        this.addHarvestForm.descricao = ''
-        this.addHarvestForm.titulo = ''
-        this.addHarvestForm.area = ''
+        this.addSafraForm.descricao = ''
+        this.addSafraForm.titulo = ''
+        this.addSafraForm.area = ''
       },
-      addHarvest() {
+      addSafra() {
         this.openModal = !this.openModal
         this.cleanForm()
       },
-      accessHarvest(harvest) {
-        this.$router.push({path: '/lavoura/'+harvest.id})
-      },
-      editHarvest(values) {
+      editSafra(values) {
         this.openModal = !this.openModal
         this.editModal = true
         this.modalTitle = 'Editar '+ values.titulo,
-        this.addHarvestForm = values
+        this.addSafraForm = values
       },
-      getMyHarvests() {
-        this.$store.dispatch('getMyHarvests')
-        let user  = this.$store.getters.currentUser
-        getMyHarvests(user)
+      getMySafras() {
+        this.$store.dispatch('getSafras')
+        
+        getMySafras(this.$route.params.id)
           .then(res => {
-            this.$store.commit('getMyHarvestsSuccess', res)
+            this.$store.commit('getSuccessSafra', res)
           })
           .catch(error => {
-            this.$store.commit('getMyHarvestsFailed', {error})
+            this.$store.commit('getSafraFailed', {error})
           })
       },
-      registerHarvest(){
-        this.$store.dispatch('registerHarvest')
+      registerSafra(){
+        this.$store.dispatch('registerSafra')
         let user  = this.$store.getters.currentUser
-        storeHarvest({...this.addHarvestForm, user_id: user.id})
+        storeSafra({...this.addSafraForm, user_id: user.id})
           .then(res => {
-            this.$store.commit('registerSuccessHarvest', res)
+            this.$store.commit('registerSuccessSafra', res)
             this.openModal = false
           })
           .catch(error => {
-            this.$store.commit('registerHarvestFailed', {error})
+            this.$store.commit('registerSafraFailed', {error})
             alert(error)
           })
       },
-      updateHarvest(){
-        this.$store.dispatch('updateHarvest')
+      updateSafra(){
+        this.$store.dispatch('updateSafra')
         let user  = this.$store.getters.currentUser
-        updateHarvest({...this.addHarvestForm, user_id: user.id})
+        updateSafra({...this.addSafraForm, user_id: user.id})
           .then(res => {
-            this.$store.commit('updateSuccessHarvest', res)
+            this.$store.commit('updateSuccessSafra', res)
             this.openModal = false
           })
           .catch(error => {
-            this.$store.commit('updateHarvestFailed', {error})
+            this.$store.commit('updateSafraFailed', {error})
             alert(error)
           })
       }
     },
     created: function() {
-      this.getMyHarvests();
+      this.getMySafras();
     }
   }
 </script>
