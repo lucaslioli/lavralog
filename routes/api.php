@@ -69,6 +69,9 @@ Route::group(['prefix' => 'insumo'], function ($router){
 
     Route::get('', 'InsumoController@index');
     Route::post('store', 'InsumoController@store');
+    Route::get('{insumo}', 'InsumoController@show');
+    Route::put('{insumo}', 'InsumoController@update');
+    Route::delete('{insumo}', 'InsumoController@destroy');
 
     Route::get('safra/{insumo}', 'InsumoController@safras');
 

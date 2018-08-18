@@ -13,7 +13,7 @@ class InsumoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   
+    {
         $insumo = Insumo::all();
 
         return response()->json($insumo);
@@ -45,20 +45,9 @@ class InsumoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Insumo $insumo)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return response()->json($insumo);
     }
 
     /**
@@ -68,9 +57,17 @@ class InsumoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Insumo $insumo)
     {
-        //
+        $insumo->descricao = $request->descricao;
+        $insumo->insumos_tipo_id = $request->insumos_tipo_id;
+
+        $insumo->save();
+
+        return response()->json([
+            'msg' => 'Insumo atualizada com sucesso!',
+            'Insumo' => $insumo
+        ]);
     }
 
     /**
@@ -79,8 +76,10 @@ class InsumoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Insumo $insumo)
     {
-        //
+        $insumo->delete();
+
+        return response()->json('Insumo deletada com sucesso!');
     }
 }
