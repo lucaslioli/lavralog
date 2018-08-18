@@ -34,7 +34,10 @@ class LavouraController extends Controller
             'user_id' => $request->user_id
         ]);
 
-        return response()->json('Lavoura criada com sucesso!');
+        return response()->json([
+            'msg' => 'Lavoura criada com sucesso!',
+            'lavoura' => $lavoura
+        ]);
     }
 
     /**
