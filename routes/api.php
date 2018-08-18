@@ -33,3 +33,10 @@ Route::group(['prefix' => 'unidade'], function ($router) {
     Route::get('{unidade}', 'UnidadeController');
 
 });
+
+Route::group(['prefix' => 'insumo_tipo'], function ($router){
+
+    Route::get('',  'InsumoTipoController@index');
+    Route::get('{insumo_tipo}', 'InsumoTipoController@show');
+
+});
