@@ -30,6 +30,7 @@ Route::group(['prefix' => 'lavoura'], function ($router) {
 
 Route::group(['prefix' => 'unidade'], function ($router) {
 
-    Route::get('{unidade}', 'UnidadeController');
+    Route::get('', 'UnidadeController@index');
+    Route::get('{unidade}', 'UnidadeController@show');
 
 });
