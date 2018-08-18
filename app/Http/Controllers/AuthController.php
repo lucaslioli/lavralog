@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -14,15 +15,22 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     public function register(){
+        $credentials = request(['email', 'password', 'name']);
+
         $user = User::create([
             'name' => request('name'),
             'email' => request('email'),
             'password' => bcrypt(request('password'))
         ]);
+
+        if(!$user)
+            return response()->json('Não foi possível criar o usuário', 422);
+        if(!$credentials)
+            return response()->json('Não foi possível criar o usuário, campos inválidos', 422);
 
         return response()->json($user);
     }

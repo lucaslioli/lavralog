@@ -32,6 +32,11 @@ export default {
       state.loading = true
       state.auth_error = null
     },
+    register(state) {
+      state.loading = true
+      state.auth_error = null
+    },
+
     loginSuccess(state, payload) {
       state.loading = false
       state.auth_error = null
@@ -40,10 +45,20 @@ export default {
 
       localStorage.setItem("user", JSON.stringify(state.currentUser))
     },
+    registerSuccess(state, payload) {
+      state.loading = false
+      state.auth_error = null
+    },
+
     loginFailed(state, payload) {
       state.loading = false
       state.auth_error = payload.error
     },
+    registerFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
+
     logout(state) {
       localStorage.removeItem("user")
       state.isLoggedIn = false
@@ -53,6 +68,10 @@ export default {
   actions: {
     login(context) {
       context.commit("login")
+    },
+
+    register(context) {
+      context.commit("register")
     }
   }
 }

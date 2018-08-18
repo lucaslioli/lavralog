@@ -1,5 +1,6 @@
 import Home from './components/Home'
 import Login from './components/auth/Login'
+import RegisterUser from './components/auth/RegisterUser'
 export const routes = [
   {
     path: '/',
@@ -11,5 +12,9 @@ export const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/register',
+    component: RegisterUser
   }
 ]
