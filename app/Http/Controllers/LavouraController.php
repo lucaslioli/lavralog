@@ -15,7 +15,7 @@ class LavouraController extends Controller
      */
     public function index(User $user)
     {
-        $lavoura = Lavoura::where('user_id', $user->id)->first();
+        $lavoura = Lavoura::where('user_id', $user->id)->get();
 
         return response()->json($lavoura);
     }
