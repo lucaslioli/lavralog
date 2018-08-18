@@ -15,7 +15,7 @@ class SafraController extends Controller
      */
     public function index(Lavoura $lavoura)
     {
-        $safra = Safra::where('lavoura_id', $lavoura->id)->get();
+        $safra = Safra::where('lavoura_id', $lavoura->id)->with('unidade')->get();
 
         return response()->json($safra);
     }
