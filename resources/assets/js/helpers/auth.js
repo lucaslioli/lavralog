@@ -6,8 +6,21 @@ export const login = (credentials) => {
        res(response.data)
      })
      .catch((err) => {
-       rej("Wrong email or password")
+       rej("Sua senha ou e-mail estão incorretos")
      })
+  })
+}
+
+export const register = (credentials) => {
+  return new Promise( (res, rej) => {
+    const {email, password, name} = credentials
+    axios.post('/api/auth/register', {email, password, name} )
+      .then( (response) => {
+        res(response.data)
+      })
+      .catch((err) => {
+        rej("Erro ao registrar seu usuário")
+      })
   })
 }
 

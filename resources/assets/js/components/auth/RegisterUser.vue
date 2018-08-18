@@ -4,10 +4,16 @@
       <v-flex xs12 sm6 md6>
         <v-card>
           <v-card-title primary-title>
-            <h3 class="headline mb-0">Acesso</h3>
+            <h3 class="headline mb-0">Seu dados</h3>
           </v-card-title>
             <div class="pa-2">
-              <v-form v-model="valid" @submit.prevent="authenticate">
+              <v-form v-model="valid" @submit.prevent="register">
+                <v-text-field
+                  v-model="name"
+                  :rules="nameRules"
+                  label="Seu nome"
+                  required
+                ></v-text-field>
                 <v-text-field
                   v-model="email"
                   :rules="emailRules"
@@ -30,7 +36,7 @@
                   :disabled="!valid"
                   type="submit"
                 >
-                  Entrar
+                  Registrar
                 </v-btn>
               </v-form>
             </div>
@@ -50,10 +56,10 @@
 </template>
 
 <script>
-  import {login} from '../../helpers/auth'
+  import {register} from '../../helpers/auth'
   
   export default {
-    name: 'login',
+    name: 'register-user',
     data: () => ({
       valid: false,
       show: false,
@@ -67,18 +73,22 @@
         v => !!v || 'O campo e-mail é obrigatório',
         v => /.+@.+/.test(v) || 'e-mail inválido'
       ],
+      name: '',
+      nameRules: [
+        v => !!v || 'O campo nome é obrigatório',
+      ],
       error: null
     }),
     methods: {
-      authenticate() {
-        this.$store.dispatch('login')
-        login(this.$data)
+      register() {
+        this.$store.dispatch('register')
+        register(this.$data)
           .then(res => {
-            this.$store.commit('loginSuccess', res)
-            this.$router.push({path: '/'})
+            this.$store.commit('registerSuccess', res)
+            this.$router.push({path: '/login'})
           })
           .catch(error => {
-            this.$store.commit('loginFailed', {error})
+            this.$store.commit('registerFailed', {error})
           })
       }
     },

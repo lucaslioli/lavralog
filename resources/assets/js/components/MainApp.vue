@@ -27,23 +27,23 @@
     
     <v-toolbar app dark fixed>
       <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="currentUser"></v-toolbar-side-icon>
-      <v-toolbar-title>PotatoVue</v-toolbar-title>
+      <v-toolbar-title>Lavralog</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         
         <template v-if="!currentUser">
           
           <v-btn flat>
-            <router-link to="/login">Login</router-link>
+            <router-link to="/login">Entrar</router-link>
           </v-btn>
           <v-btn flat>
-            <router-link to="/register">Register</router-link>
+            <router-link to="/register">Cadastre-se</router-link>
           </v-btn>
         
         </template>
         <template v-else>
           
-          <v-btn flat @click.prevent="logout">Logout</v-btn>
+          <v-btn flat @click.prevent="logout">Sair</v-btn>
         
         </template>
       </v-toolbar-items>

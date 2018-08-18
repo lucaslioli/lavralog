@@ -12353,6 +12353,7 @@ function applyToTag (styleElement, obj) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return login; });
+/* unused harmony export register */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getLocalUser; });
 var login = function login(credentials) {
   return new Promise(function (res, rej) {
@@ -12362,7 +12363,21 @@ var login = function login(credentials) {
     axios.post('/api/auth/login', { email: email, password: password }).then(function (response) {
       res(response.data);
     }).catch(function (err) {
-      rej("Wrong email or password");
+      rej("Sua senha ou e-mail estão incorretos");
+    });
+  });
+};
+
+var register = function register(credentials) {
+  return new Promise(function (res, rej) {
+    var email = credentials.email,
+        password = credentials.password,
+        name = credentials.name;
+
+    axios.post('/api/auth/register', { email: email, password: password, name: name }).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Erro ao registrar seu usuário");
     });
   });
 };
@@ -12382,7 +12397,7 @@ var getLocalUser = function getLocalUser() {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(15);
-module.exports = __webpack_require__(63);
+module.exports = __webpack_require__(64);
 
 
 /***/ }),
@@ -12401,7 +12416,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vuetify__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vuetify__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__store__ = __webpack_require__(62);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__helpers_general__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__helpers_general__ = __webpack_require__(63);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -35196,7 +35211,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -35258,6 +35273,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -35269,15 +35285,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       show: false,
       password: '',
       passwordRules: [function (v) {
-        return !!v || 'Password is required';
+        return !!v || 'O campo senha é obrigatório';
       }, function (v) {
-        return v.length >= 6 || 'Name must be less than 6 characters';
+        return v.length >= 6 || 'este campo precisa de pelo menos 6 caracteres';
       }],
       email: '',
       emailRules: [function (v) {
-        return !!v || 'E-mail is required';
+        return !!v || 'O campo e-mail é obrigatório';
       }, function (v) {
-        return (/.+@.+/.test(v) || 'E-mail must be valid'
+        return (/.+@.+/.test(v) || 'e-mail inválido'
         );
       }],
       error: null
@@ -35327,90 +35343,85 @@ var render = function() {
                 "v-card",
                 [
                   _c("v-card-title", { attrs: { "primary-title": "" } }, [
-                    _c(
-                      "div",
-                      [
-                        _c("h3", { staticClass: "headline mb-0" }, [
-                          _vm._v("Login")
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "v-form",
-                          {
+                    _c("h3", { staticClass: "headline mb-0" }, [
+                      _vm._v("Acesso")
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "pa-2" },
+                    [
+                      _c(
+                        "v-form",
+                        {
+                          on: {
+                            submit: function($event) {
+                              $event.preventDefault()
+                              return _vm.authenticate($event)
+                            }
+                          },
+                          model: {
+                            value: _vm.valid,
+                            callback: function($$v) {
+                              _vm.valid = $$v
+                            },
+                            expression: "valid"
+                          }
+                        },
+                        [
+                          _c("v-text-field", {
+                            attrs: {
+                              rules: _vm.emailRules,
+                              label: "Seu endereço de e-mail",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.email,
+                              callback: function($$v) {
+                                _vm.email = $$v
+                              },
+                              expression: "email"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              "append-icon": _vm.show
+                                ? "visibility_off"
+                                : "visibility",
+                              rules: _vm.passwordRules,
+                              type: _vm.show ? "text" : "password",
+                              name: "input-10-1",
+                              label: "Sua senha",
+                              hint: "pelo menos 6 caracteres",
+                              counter: ""
+                            },
                             on: {
-                              submit: function($event) {
-                                $event.preventDefault()
-                                return _vm.authenticate($event)
+                              "click:append": function($event) {
+                                _vm.show = !_vm.show
                               }
                             },
                             model: {
-                              value: _vm.valid,
+                              value: _vm.password,
                               callback: function($$v) {
-                                _vm.valid = $$v
+                                _vm.password = $$v
                               },
-                              expression: "valid"
+                              expression: "password"
                             }
-                          },
-                          [
-                            _c("v-text-field", {
-                              attrs: {
-                                rules: _vm.emailRules,
-                                label: "E-mail",
-                                required: ""
-                              },
-                              model: {
-                                value: _vm.email,
-                                callback: function($$v) {
-                                  _vm.email = $$v
-                                },
-                                expression: "email"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("v-text-field", {
-                              attrs: {
-                                "append-icon": _vm.show
-                                  ? "visibility_off"
-                                  : "visibility",
-                                rules: _vm.passwordRules,
-                                type: _vm.show ? "text" : "password",
-                                name: "input-10-1",
-                                label: "Normal with hint text",
-                                hint: "At least 6 characters",
-                                counter: ""
-                              },
-                              on: {
-                                "click:append": function($event) {
-                                  _vm.show = !_vm.show
-                                }
-                              },
-                              model: {
-                                value: _vm.password,
-                                callback: function($$v) {
-                                  _vm.password = $$v
-                                },
-                                expression: "password"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: { disabled: !_vm.valid, type: "submit" }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                submit\n              "
-                                )
-                              ]
-                            )
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  ])
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            { attrs: { disabled: !_vm.valid, type: "submit" } },
+                            [_vm._v("\n                Entrar\n              ")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
                 ],
                 1
               ),
@@ -35674,7 +35685,7 @@ var render = function() {
               })
             : _vm._e(),
           _vm._v(" "),
-          _c("v-toolbar-title", [_vm._v("PotatoVue")]),
+          _c("v-toolbar-title", [_vm._v("Lavralog")]),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
@@ -35689,7 +35700,7 @@ var render = function() {
                       { attrs: { flat: "" } },
                       [
                         _c("router-link", { attrs: { to: "/login" } }, [
-                          _vm._v("Login")
+                          _vm._v("Entrar")
                         ])
                       ],
                       1
@@ -35700,7 +35711,7 @@ var render = function() {
                       { attrs: { flat: "" } },
                       [
                         _c("router-link", { attrs: { to: "/register" } }, [
-                          _vm._v("Register")
+                          _vm._v("Cadastre-se")
                         ])
                       ],
                       1
@@ -35718,7 +35729,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("Logout")]
+                      [_vm._v("Sair")]
                     )
                   ]
             ],
@@ -55909,6 +55920,10 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
       state.loading = true;
       state.auth_error = null;
     },
+    register: function register(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
     loginSuccess: function loginSuccess(state, payload) {
       state.loading = false;
       state.auth_error = null;
@@ -55917,7 +55932,15 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
 
       localStorage.setItem("user", JSON.stringify(state.currentUser));
     },
+    registerSuccess: function registerSuccess(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+    },
     loginFailed: function loginFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
+    registerFailed: function registerFailed(state, payload) {
       state.loading = false;
       state.auth_error = payload.error;
     },
@@ -55936,13 +55959,6 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
 
 /***/ }),
 /* 63 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 64 */,
-/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55971,6 +55987,12 @@ function initialize(store, router) {
     }
   });
 }
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
