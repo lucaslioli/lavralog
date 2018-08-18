@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Lavoura;
 use App\Safra;
+use App\Insumo;
 
 class SafraController extends Controller
 {
@@ -92,5 +93,23 @@ class SafraController extends Controller
 
     public function insumos(Safra $safra){
         return response()->json($safra->insumos);
+    }
+
+    public function newInsumoSafra(Request $request, Safra $safra, Insumo $insumo){
+        $safra->insumos()->attach($insumo->id, [
+            'quantidade' => $request->quantidade,
+            'custo_unitario' => $request->custo_unitario,
+            'custo_total' => $request->custo_total,
+            'created_at' => \Carbon\Carbon::now(-3),
+            'updated_at' => \Carbon\Carbon::now(-3),
+        ]);
+
+        return response()->json($insumo->descricao . ' adicionado aos insumos!');
+    }
+
+    public function deleteInsumoSafra(Safra $safra, Insumo $insumo){
+        $safra->insumos()->detach($insumo->id);
+
+        return response()->json($insumo->descricao . ' removido dos insumos!');
     }
 }

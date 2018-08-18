@@ -48,6 +48,8 @@ Route::group(['prefix' => 'safra'], function ($router) {
     Route::delete('{safra}', 'SafraController@destroy');
 
     Route::get('insumos/{safra}', 'SafraController@insumos');
+    Route::post('{safra}/insumo/{insumo}', 'SafraController@newInsumoSafra');
+    Route::delete('{safra}/insumo/{insumo}', 'SafraController@deleteInsumoSafra');
 
 });
 
