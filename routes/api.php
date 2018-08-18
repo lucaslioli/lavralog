@@ -24,5 +24,6 @@ Route::group(['prefix' => 'lavoura'], function ($router) {
     Route::post('store', 'LavouraController@store');
     Route::get('{lavoura}', 'LavouraController@show');
     Route::put('{lavoura}', 'LavouraController@update');
+    Route::delete('{lavoura}', 'LavouraController@destroy');
 
 });
