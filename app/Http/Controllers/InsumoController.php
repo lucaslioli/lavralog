@@ -82,4 +82,8 @@ class InsumoController extends Controller
 
         return response()->json('Insumo deletada com sucesso!');
     }
+
+    public function safras(Insumo $insumo){
+        return response()->json($insumo->safras);
+    }
 }

@@ -73,6 +73,6 @@ Route::group(['prefix' => 'insumo'], function ($router){
     Route::put('{insumo}', 'InsumoController@update');
     Route::delete('{insumo}', 'InsumoController@destroy');
 
-    Route::get('safra/{insumo}', 'InsumoController@safras');
+    Route::get('safras/{insumo}', 'InsumoController@safras');
 
 });
