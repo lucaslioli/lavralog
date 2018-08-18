@@ -28,6 +28,16 @@ Route::group(['prefix' => 'lavoura'], function ($router) {
 
 });
 
+Route::group(['prefix' => 'safra'], function ($router) {
+
+    Route::get('lavoura/{lavoura}', 'SafraController@index');
+    Route::post('store', 'SafraController@store');
+    Route::get('{safra}', 'SafraController@show');
+    Route::put('{safra}', 'SafraController@update');
+    Route::delete('{safra}', 'SafraController@destroy');
+
+});
+
 Route::group(['prefix' => 'unidade'], function ($router) {
 
     Route::get('{unidade}', 'UnidadeController');
