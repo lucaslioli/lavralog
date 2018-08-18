@@ -17,6 +17,16 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login']]);
     }
 
+    public function register(){
+        $user = User::create([
+            'name' => request('name'),
+            'email' => request('email'),
+            'password' => bcrypt(request('password'))
+        ]);
+
+        return $user;
+    }
+
     /**
      * Get a JWT via given credentials.
      *
