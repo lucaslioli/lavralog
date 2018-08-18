@@ -21,6 +21,6 @@ Route::group(['prefix' => 'auth'], function ($router) {
 Route::group(['prefix' => 'lavoura'], function ($router) {
 
     Route::get('user/{user}', 'LavouraController@index');
-    Route::post('create', 'LavouraController@create');
+    Route::post('store', 'LavouraController@store');
 
 });
