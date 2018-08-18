@@ -47,9 +47,9 @@ class LavouraController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Lavoura $lavoura)
     {
-        //
+        return response()->json($lavoura);
     }
 
     /**
