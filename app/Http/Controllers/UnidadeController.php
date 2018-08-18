@@ -6,13 +6,13 @@ use App\Unidade;
 
 class UnidadeController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function __invoke(Unidade $unidade)
+
+    public function index(){
+        $unidades = Unidade::all();
+        return response()->json($unidades);
+    }
+
+    public function show(Unidade $unidade)
     {
         return response()->json($unidade);
     }
