@@ -53,26 +53,25 @@ class LavouraController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Lavoura $lavoura)
     {
-        //
+        $lavoura->titulo = $request->titulo;
+        $lavoura->descricao = $request->descricao;
+        $lavoura->area = $request->area;
+        $lavoura->user_id = $request->user_id;
+
+        $lavoura->save();
+
+        return response()->json([
+            'msg' => 'Lavoura atualizada com sucesso!',
+            'lavoura' => $lavoura
+        ]);
     }
 
     /**
@@ -81,8 +80,10 @@ class LavouraController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Lavoura $lavoura)
     {
-        //
+        $lavoura->delete();
+
+        return response()->json('Lavoura deletada com sucesso!');
     }
 }
