@@ -25,9 +25,9 @@
       </v-navigation-drawer>
     </template>
     
-    <v-toolbar app dark fixed>
+    <v-toolbar app fixed dark color="light-green darken-4">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="currentUser"></v-toolbar-side-icon>
-      <v-toolbar-title>Lavralog</v-toolbar-title>
+      <v-toolbar-title>Lavralog - {{currentUser.name}} </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         
