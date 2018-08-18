@@ -12,8 +12,8 @@ export const getMySafras = (harvestId) => {
 
 export const storeSafra = (fields) => {
   return new Promise( (res, rej) => {
-    const {titulo, ano, lavoura_id, unidade_id} = fields
-    axios.post(`/api/lavoura/store`, {titulo, ano, lavoura_id, unidade_id})
+    const { ano, lavoura_id, cultura, unidade_id} = fields
+    axios.post(`/api/safra/store`, { ano, lavoura_id, cultura, unidade_id})
       .then( (response) => {
         res(response.data)
       })
@@ -25,8 +25,8 @@ export const storeSafra = (fields) => {
 
 export const updateSafra = (fields) => {
   return new Promise( (res, rej) => {
-    const {titulo, ano, lavoura_id, unidade_id} = fields
-    axios.put(`/api/safra/${id}`, {titulo, ano, lavoura_id, unidade_id})
+    const {id, ano, lavoura_id, unidade, cultura, producao, valor_unitario, receita_total} = fields
+    axios.put(`/api/safra/${id}`, { ano, lavoura_id, unidade_id : unidade.id, cultura, producao, valor_unitario, receita_total})
       .then( (response) => {
         res(response.data)
       })

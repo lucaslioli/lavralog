@@ -34904,6 +34904,9 @@ var index_esm = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_auth_RegisterUser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_auth_RegisterUser__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Harvest__ = __webpack_require__(81);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Harvest___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Harvest__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Insumo__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_Insumo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_Insumo__);
+
 
 
 
@@ -34917,6 +34920,12 @@ var routes = [{
 }, {
   path: '/lavoura/:id',
   component: __WEBPACK_IMPORTED_MODULE_3__components_Harvest___default.a,
+  meta: {
+    requiresAuth: true
+  }
+}, {
+  path: '/lavoura/:id/safra/:safra_id',
+  component: __WEBPACK_IMPORTED_MODULE_4__components_Insumo___default.a,
   meta: {
     requiresAuth: true
   }
@@ -56290,7 +56299,7 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
     getSuccessUnit: function getSuccessUnit(state, payload) {
       state.loading = false;
       state.auth_error = null;
-      state.units = [].concat(_toConsumableArray(state.units), [payload.unidades ? payload.unidades : null]);
+      state.units = payload;
     },
     getSuccessSafra: function getSuccessSafra(state, payload) {
       state.loading = false;
@@ -57134,6 +57143,7 @@ exports.push([module.i, "\n#lateral .v-btn--floating[data-v-4037e9fc] {\n  margi
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_safra__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__helpers_unit__ = __webpack_require__(87);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -57240,6 +57250,41 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -57251,21 +57296,36 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       fab: false,
       openModal: false,
       editModal: false,
-      modalTitle: 'Cadastrar uma Lavoura',
+      modalTitle: 'Cadastrar uma Safra',
       valid: false,
       addSafraForm: {
-        titulo: '',
-        tituloRules: [function (v) {
-          return !!v || 'O campo titulo é obrigatório';
+        ano: '',
+        anoRules: [function (v) {
+          return !!v || 'O campo ano é obrigatório';
+        }, function (v) {
+          return v.length >= 4 || 'O campo ano precisa ter 4 digitos';
         }],
-        descricao: '',
-        descricaoRules: [function (v) {
-          return !!v || 'O campo titulo é obrigatório';
+        unidade_id: '',
+        unitRules: [function (v) {
+          return !!v || 'O campo unidade é obrigatório';
         }],
-        area: '',
-        areaRules: [function (v) {
-          return !!v || 'O campo titulo é obrigatório';
+        cultura: '',
+        culturaRules: [function (v) {
+          return !!v || 'O campo cultura é obrigatório';
+        }],
+        producao: '',
+        producaoRules: [function (v) {
+          return !!v || 'O campo producao é obrigatório';
+        }],
+        valor_unitario: '',
+        valor_unitarioRules: [function (v) {
+          return !!v || 'O campo valor unitario é obrigatório';
+        }],
+        receita_total: '',
+        receita_totalRules: [function (v) {
+          return !!v || 'O campo receita total é obrigatório';
         }]
+
       }
     };
   },
@@ -57281,14 +57341,35 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       return this.$store.getters.myHarvests.filter(function (i) {
         return i.id == _this.$route.params.id;
-      })[0];
+      })[0] || [];
+    },
+    allUnits: function allUnits() {
+      var array = [];
+      this.$store.getters.units.map(function (i) {
+        return array.push({ text: i.unidade, value: i.id });
+      });
+      return array;
     }
   },
   methods: {
+    getAllUnits: function getAllUnits() {
+      var _this2 = this;
+
+      this.$store.dispatch('getUnits');
+      Object(__WEBPACK_IMPORTED_MODULE_1__helpers_unit__["a" /* getUnits */])().then(function (res) {
+        _this2.$store.commit('getSuccessUnit', res);
+      }).catch(function (error) {
+        _this2.$store.commit('getUnitsFailed', { error: error });
+      });
+    },
     cleanForm: function cleanForm() {
-      this.addSafraForm.descricao = '';
-      this.addSafraForm.titulo = '';
-      this.addSafraForm.area = '';
+      this.addSafraForm.unidade_id = '';
+      this.addSafraForm.id = '';
+      this.addSafraForm.ano = '';
+      this.addSafraForm.cultura = '';
+      this.addSafraForm.producao = '';
+      this.addSafraForm.valor_unitario = '';
+      this.addSafraForm.receita_total = '';
     },
     addSafra: function addSafra() {
       this.openModal = !this.openModal;
@@ -57297,48 +57378,55 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     editSafra: function editSafra(values) {
       this.openModal = !this.openModal;
       this.editModal = true;
-      this.modalTitle = 'Editar ' + values.titulo, this.addSafraForm = values;
+      this.modalTitle = 'Editar ' + values.ano, this.addSafraForm = values;
     },
     getMySafras: function getMySafras() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.$store.dispatch('getSafras');
 
       Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["a" /* getMySafras */])(this.$route.params.id).then(function (res) {
-        _this2.$store.commit('getSuccessSafra', res);
+
+        _this3.$store.commit('getSuccessSafra', res);
       }).catch(function (error) {
-        _this2.$store.commit('getSafraFailed', { error: error });
+        _this3.$store.commit('getSafraFailed', { error: error });
       });
     },
     registerSafra: function registerSafra() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$store.dispatch('registerSafra');
-      var user = this.$store.getters.currentUser;
-      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["b" /* storeSafra */])(_extends({}, this.addSafraForm, { user_id: user.id })).then(function (res) {
-        _this3.$store.commit('registerSuccessSafra', res);
-        _this3.openModal = false;
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["b" /* storeSafra */])(_extends({}, this.addSafraForm, { lavoura_id: this.$route.params.id, unidade_id: this.addSafraForm.unidade.id })).then(function (res) {
+        _this4.$store.commit('registerSuccessSafras', res);
+        _this4.openModal = false;
       }).catch(function (error) {
-        _this3.$store.commit('registerSafraFailed', { error: error });
+        _this4.$store.commit('registerSafraFailed', { error: error });
         alert(error);
       });
     },
     updateSafra: function updateSafra() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.$store.dispatch('updateSafra');
-      var user = this.$store.getters.currentUser;
-      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["c" /* updateSafra */])(_extends({}, this.addSafraForm, { user_id: user.id })).then(function (res) {
-        _this4.$store.commit('updateSuccessSafra', res);
-        _this4.openModal = false;
+
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["c" /* updateSafra */])(_extends({}, this.addSafraForm, { lavoura_id: this.$route.params.id, unidade_id: this.addSafraForm.unidade_id.value })).then(function (res) {
+        _this5.$store.commit('updateSuccessSafra', res);
+        _this5.openModal = !_this5.openModal;
+        _this5.editModal = false;
       }).catch(function (error) {
-        _this4.$store.commit('updateSafraFailed', { error: error });
+        _this5.$store.commit('updateSafraFailed', { error: error });
         alert(error);
       });
+
+      this.openModal = false;
+    },
+    accessInsumo: function accessInsumo(safra) {
+      this.$router.push({ path: '/lavoura/' + this.$route.params.id + '/safra/' + safra.id });
     }
   },
   created: function created() {
     this.getMySafras();
+    this.getAllUnits();
   }
 });
 
@@ -57405,7 +57493,53 @@ var render = function() {
                                       { staticClass: "subheading mb-0" },
                                       [
                                         _c("b", [_vm._v("Unidade:")]),
-                                        _vm._v(" " + _vm._s(safra))
+                                        _vm._v(
+                                          " " + _vm._s(safra.unidade.unidade)
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "h6",
+                                      { staticClass: "subheading mb-0" },
+                                      [
+                                        _c("b", [_vm._v("Produção:")]),
+                                        _vm._v(" " + _vm._s(safra.producao))
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "h6",
+                                      { staticClass: "subheading mb-0" },
+                                      [
+                                        _c("b", [_vm._v("Valor Unitário:")]),
+                                        _vm._v(
+                                          " " + _vm._s(safra.valor_unitario)
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "h6",
+                                      { staticClass: "subheading mb-0" },
+                                      [
+                                        _c("b", [_vm._v("Receita total:")]),
+                                        _vm._v(
+                                          " R$ " +
+                                            _vm._s(
+                                              (parseFloat(safra.producao) ||
+                                                0.0) *
+                                                (parseFloat(
+                                                  safra.valor_unitario
+                                                ) || 0.0)
+                                            )
+                                        )
                                       ]
                                     )
                                   ])
@@ -57417,6 +57551,19 @@ var render = function() {
                             _c(
                               "v-card-actions",
                               [
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { flat: "", color: "green" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.accessInsumo(safra)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Acessar Insumos")]
+                                ),
+                                _vm._v(" "),
                                 _c(
                                   "v-btn",
                                   {
@@ -57446,7 +57593,7 @@ var render = function() {
                 _c(
                   "h6",
                   { staticClass: "headline text-xs-center myLavouras" },
-                  [_vm._v(" Nenhuma Safra cadastrada para esta lavoura")]
+                  [_vm._v(" Nenhuma safra cadastrada para esta lavoura")]
                 )
               ],
           _vm._v(" "),
@@ -57562,21 +57709,6 @@ var render = function() {
                             [
                               _c("v-text-field", {
                                 attrs: {
-                                  rules: _vm.addSafraForm.tituloRules,
-                                  label: "Titulo da Safra",
-                                  required: ""
-                                },
-                                model: {
-                                  value: _vm.addSafraForm.titulo,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.addSafraForm, "titulo", $$v)
-                                  },
-                                  expression: "addSafraForm.titulo"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("v-text-field", {
-                                attrs: {
                                   label: "Ano da Safra",
                                   rules: _vm.addSafraForm.anoRules,
                                   required: ""
@@ -57592,16 +57724,91 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-text-field", {
                                 attrs: {
-                                  label: "Unidade de medida da Produção",
-                                  rules: _vm.addSafraForm.unitRules,
+                                  label: "Cultura da Safra",
+                                  rules: _vm.addSafraForm.culturaRules,
                                   required: ""
                                 },
                                 model: {
-                                  value: _vm.addSafraForm.unit,
+                                  value: _vm.addSafraForm.cultura,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.addSafraForm, "unit", $$v)
+                                    _vm.$set(_vm.addSafraForm, "cultura", $$v)
                                   },
-                                  expression: "addSafraForm.unit"
+                                  expression: "addSafraForm.cultura"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "v-flex",
+                                { attrs: { xs12: "" } },
+                                [
+                                  _c("v-combobox", {
+                                    attrs: {
+                                      items: _vm.allUnits,
+                                      rules: _vm.addSafraForm.unitRules,
+                                      required: "",
+                                      label: "Unidade de medida da Produção"
+                                    },
+                                    model: {
+                                      value: _vm.addSafraForm.unidade_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.addSafraForm,
+                                          "unidade_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "addSafraForm.unidade_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  if: "editModal",
+                                  label: "Produção da Safra",
+                                  rules: _vm.addSafraForm.producaoRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addSafraForm.producao,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.addSafraForm, "producao", $$v)
+                                  },
+                                  expression: "addSafraForm.producao"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  if: "editModal",
+                                  label: "Valor unitário da Safra",
+                                  rules: _vm.addSafraForm.valor_unitarioRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addSafraForm.valor_unitario,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.addSafraForm,
+                                      "valor_unitario",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "addSafraForm.valor_unitario"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  if: "editModal",
+                                  label: "Receita total da Safra",
+                                  value:
+                                    _vm.addSafraForm.producao *
+                                    _vm.addSafraForm.valor_unitario,
+                                  rules: _vm.addSafraForm.receita_totalRules,
+                                  required: ""
                                 }
                               }),
                               _vm._v(" "),
@@ -57671,12 +57878,12 @@ var getMySafras = function getMySafras(harvestId) {
 
 var storeSafra = function storeSafra(fields) {
   return new Promise(function (res, rej) {
-    var titulo = fields.titulo,
-        ano = fields.ano,
+    var ano = fields.ano,
         lavoura_id = fields.lavoura_id,
+        cultura = fields.cultura,
         unidade_id = fields.unidade_id;
 
-    axios.post("/api/lavoura/store", { titulo: titulo, ano: ano, lavoura_id: lavoura_id, unidade_id: unidade_id }).then(function (response) {
+    axios.post("/api/safra/store", { ano: ano, lavoura_id: lavoura_id, cultura: cultura, unidade_id: unidade_id }).then(function (response) {
       res(response.data);
     }).catch(function (err) {
       rej("Não foi possível cadastrar sua safra");
@@ -57686,18 +57893,584 @@ var storeSafra = function storeSafra(fields) {
 
 var updateSafra = function updateSafra(fields) {
   return new Promise(function (res, rej) {
-    var titulo = fields.titulo,
+    var id = fields.id,
         ano = fields.ano,
         lavoura_id = fields.lavoura_id,
-        unidade_id = fields.unidade_id;
+        unidade = fields.unidade,
+        cultura = fields.cultura,
+        producao = fields.producao,
+        valor_unitario = fields.valor_unitario,
+        receita_total = fields.receita_total;
 
-    axios.put("/api/safra/" + id, { titulo: titulo, ano: ano, lavoura_id: lavoura_id, unidade_id: unidade_id }).then(function (response) {
+    axios.put("/api/safra/" + id, { ano: ano, lavoura_id: lavoura_id, unidade_id: unidade.id, cultura: cultura, producao: producao, valor_unitario: valor_unitario, receita_total: receita_total }).then(function (response) {
       res(response.data);
     }).catch(function (err) {
       rej("Não foi possível editar sua safra");
     });
   });
 };
+
+/***/ }),
+/* 87 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getUnits; });
+var getUnits = function getUnits() {
+  return new Promise(function (res, rej) {
+    axios.get("/api/unidade").then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível buscar as unidades");
+    });
+  });
+};
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(89)
+}
+var normalizeComponent = __webpack_require__(4)
+/* script */
+var __vue_script__ = __webpack_require__(91)
+/* template */
+var __vue_template__ = __webpack_require__(93)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-265f56a0"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Insumo.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-265f56a0", Component.options)
+  } else {
+    hotAPI.reload("data-v-265f56a0", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(90);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(12)("199c85d9", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-265f56a0\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Insumo.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-265f56a0\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Insumo.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#lateral .v-btn--floating[data-v-265f56a0] {\n  margin: 0 0 16px 16px;\n}\n.myLavouras[data-v-265f56a0] {\n  font-size: 1.5rem !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_insumos__ = __webpack_require__(92);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+  name: "Home",
+  data: function data() {
+    return {
+      fab: false,
+      openModal: false,
+      editModal: false,
+      modalTitle: 'Cadastrar um insumo',
+      valid: false,
+      addInsumoForm: {
+        insumos_tipo_id: '',
+        insumos_tipo_id_rules: [function (v) {
+          return !!v || 'O campo tipo de insumo é obrigatório';
+        }],
+        descricao: '',
+        descricaoRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }]
+      }
+    };
+  },
+  computed: {
+    myInsumos: function myInsumos() {
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_insumos__["a" /* getInsumos */])(this.$route.params.safra_id).then(function (res) {
+        return res;
+      }).catch(function (error) {
+        return error;
+      });
+    },
+    currentUser: function currentUser() {
+      return this.$store.getters.currentUser;
+    },
+    insumoTypes: function insumoTypes() {
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_insumos__["b" /* getTypesInsumos */])().then(function (res) {
+        var array = [];
+        res.map(function (i) {
+          return array.push({ text: i.descricao, value: i.id });
+        });
+        return array;
+      }).catch(function (error) {
+        return error;
+      });
+    }
+  },
+  methods: {
+    cleanForm: function cleanForm() {
+      this.addInsumoForm.descricao = '';
+      this.addInsumoForm.insumos_tipo_id = '';
+    },
+    addInsumo: function addInsumo() {
+      this.openModal = !this.openModal;
+      this.cleanForm();
+    },
+    registerInsumo: function registerInsumo() {}
+  }
+});
+
+/***/ }),
+/* 92 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getInsumos; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return getTypesInsumos; });
+var getInsumos = function getInsumos(id) {
+  return new Promise(function (res, rej) {
+
+    axios.get("/api/safra/insumos/" + id).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível buscar os insumos");
+    });
+  });
+};
+
+var getTypesInsumos = function getTypesInsumos() {
+  return new Promise(function (res, rej) {
+
+    axios.get("/api/insumo_tipo").then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível buscar os tipos de insumos");
+    });
+  });
+};
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-container",
+    { attrs: { fluid: "", "fill-height": "" } },
+    [
+      _c(
+        "v-layout",
+        { attrs: { "align-space-between": "", column: "" } },
+        [
+          _c("h6", { staticClass: "headline text-xs-center myLavouras" }, [
+            _vm._v(" Insumos ")
+          ]),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _vm.myInsumos
+            ? _vm._l(_vm.myInsumos, function(insumo, key) {
+                return _c(
+                  "v-layout",
+                  { key: key },
+                  [
+                    _c(
+                      "v-flex",
+                      { staticClass: "pa-2", attrs: { xs12: "" } },
+                      [
+                        _c(
+                          "v-card",
+                          [
+                            _c(
+                              "v-card-title",
+                              { attrs: { "primary-title": "" } },
+                              [
+                                _c("v-flex", { attrs: { column: "" } }, [
+                                  _c("div", [
+                                    _c("h3", { staticClass: "headline mb-0" }, [
+                                      _vm._v(_vm._s(insumo))
+                                    ])
+                                  ])
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              })
+            : [
+                _c("h6", { staticClass: "headline text-xs-center" }, [
+                  _vm._v("Nenhum insumo cadastrado")
+                ])
+              ],
+          _vm._v(" "),
+          _c(
+            "v-content",
+            [
+              _c(
+                "v-container",
+                {
+                  attrs: {
+                    "fill-height": "",
+                    "align-center": "",
+                    "justify-center": ""
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    { attrs: { id: "lateral" } },
+                    [
+                      _c(
+                        "v-fab-transition",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "amber darken-1",
+                                dark: "",
+                                fab: "",
+                                fixed: "",
+                                bottom: "",
+                                right: "",
+                                "justify-center": ""
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.stopPropagation()
+                                  return _vm.addInsumo($event)
+                                }
+                              },
+                              model: {
+                                value: _vm.fab,
+                                callback: function($$v) {
+                                  _vm.fab = $$v
+                                },
+                                expression: "fab"
+                              }
+                            },
+                            [_c("v-icon", [_vm._v("add")])],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-dialog",
+            {
+              model: {
+                value: _vm.openModal,
+                callback: function($$v) {
+                  _vm.openModal = $$v
+                },
+                expression: "openModal"
+              }
+            },
+            [
+              _c(
+                "v-flex",
+                { attrs: { xs12: "" } },
+                [
+                  _c(
+                    "v-card",
+                    [
+                      _c("v-card-title", { attrs: { "primary-title": "" } }, [
+                        _c("h3", { staticClass: "headline mb-0" }, [
+                          _vm._v(_vm._s(_vm.modalTitle))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "pa-2" },
+                        [
+                          _c(
+                            "v-form",
+                            {
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  _vm.registerInsumo()
+                                }
+                              },
+                              model: {
+                                value: _vm.valid,
+                                callback: function($$v) {
+                                  _vm.valid = $$v
+                                },
+                                expression: "valid"
+                              }
+                            },
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "Descrição do insumo",
+                                  rules: _vm.addInsumoForm.descricaoRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addInsumoForm.descricao,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.addInsumoForm,
+                                      "descricao",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "addInsumoForm.descricao"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "v-flex",
+                                { attrs: { xs12: "" } },
+                                [
+                                  _c("v-combobox", {
+                                    attrs: {
+                                      items: _vm.insumoTypes,
+                                      rules:
+                                        _vm.addInsumoForm.insumos_tipo_id_rules,
+                                      required: "",
+                                      label: "Tipos de insumo"
+                                    },
+                                    model: {
+                                      value: _vm.addInsumoForm.insumos_tipo_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.addInsumoForm,
+                                          "insumos_tipo_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "addInsumoForm.insumos_tipo_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    disabled: !_vm.valid,
+                                    type: "submit"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                Salvar\n              "
+                                  )
+                                ]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        2
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-265f56a0", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

@@ -119,7 +119,7 @@ export default {
     getSuccessUnit(state, payload) {
       state.loading = false
       state.auth_error = null
-      state.units = [ ...state.units, payload.unidades ? payload.unidades : null ]
+      state.units = payload
     },
     getSuccessSafra(state, payload) {
       state.loading = false

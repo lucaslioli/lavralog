@@ -2,36 +2,35 @@
   <v-container fluid fill-height>
     <v-layout align-space-between column>
       
-      <h6 class="headline text-xs-center myLavouras"> Minhas Lavouras </h6>
+      <h6 class="headline text-xs-center myLavouras"> Insumos </h6>
       <br>
       
-      <v-layout v-for="(harvest, key) in myHarvests" :key=key>
-        <v-flex xs12 class="pa-2">
-          <v-card>
-            <v-card-title primary-title>
-              <v-flex column>
-                <div>
-                  <h3 class="headline mb-0">{{harvest.titulo}}</h3>
-                </div>
-                <div>
-                  <h6 class="subheading mb-0"><b>Área:</b> {{harvest.area}} hectares</h6>
-                </div>
-              </v-flex>
-            </v-card-title>
-            <v-card-actions>
-              <v-btn flat color="green" @click="accessHarvest(harvest)">Acessar</v-btn>
-              <v-btn flat color="orange" @click="editHarvest(harvest)">Editar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-flex>
-      </v-layout>
+      <template v-if="myInsumos">
+        <v-layout v-for="(insumo, key) in myInsumos" :key=key>
+          <v-flex xs12 class="pa-2">
+            <v-card>
+              <v-card-title primary-title>
+                <v-flex column>
+                  <div>
+                    <h3 class="headline mb-0">{{insumo}}</h3>
+                  </div>
+                </v-flex>
+              </v-card-title>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </template>
+      <template v-else>
+        <h6 class="headline text-xs-center">Nenhum insumo cadastrado</h6>
+      </template>
+      
       
       <v-content>
         <v-container fill-height align-center justify-center>
           <div id="lateral">
             <v-fab-transition>
               <v-btn
-                @click.stop="addHarvest"
+                @click.stop="addInsumo"
                 color="amber darken-1"
                 v-model="fab"
                 dark
@@ -57,25 +56,22 @@
               <h3 class="headline mb-0">{{modalTitle}}</h3>
             </v-card-title>
             <div class="pa-2">
-              <v-form v-model="valid" @submit.prevent="editModal ? updateHarvest() : registerHarvest()">
+              <v-form v-model="valid" @submit.prevent="registerInsumo()">
                 <v-text-field
-                  v-model="addHarvestForm.titulo"
-                  :rules="addHarvestForm.tituloRules"
-                  label="Titulo da Lavoura"
+                  v-model="addInsumoForm.descricao"
+                  label="Descrição do insumo"
+                  :rules="addInsumoForm.descricaoRules"
                   required
                 ></v-text-field>
-                <v-text-field
-                  v-model="addHarvestForm.descricao"
-                  label="Descrição da Lavoura"
-                  :rules="addHarvestForm.descricaoRules"
-                  required
-                ></v-text-field>
-                <v-text-field
-                  v-model="addHarvestForm.area"
-                  label="Área da Lavoura"
-                  :rules="addHarvestForm.areaRules"
-                  required
-                ></v-text-field>
+                <v-flex xs12>
+                  <v-combobox
+                    v-model="addInsumoForm.insumos_tipo_id"
+                    :items="insumoTypes"
+                    :rules="addInsumoForm.insumos_tipo_id_rules"
+                    required
+                    label="Tipos de insumo"
+                  ></v-combobox>
+                </v-flex>
                 <v-btn
                   :disabled="!valid"
                   type="submit"
@@ -94,7 +90,7 @@
 </template>
 
 <script>
-  import {getMyHarvests, storeHarvest, updateHarvest} from '../helpers/harvest'
+  import {getInsumos, getTypesInsumos} from '../helpers/insumos'
 
   export default {
     
@@ -103,90 +99,56 @@
       fab: false,
       openModal: false,
       editModal: false,
-      modalTitle: 'Cadastrar uma Lavoura',
+      modalTitle: 'Cadastrar um insumo',
       valid: false,
-      addHarvestForm: {
-        titulo: '',
-        tituloRules: [
-          v => !!v || 'O campo titulo é obrigatório',
+      addInsumoForm: {
+        insumos_tipo_id: '',
+        insumos_tipo_id_rules: [
+          v => !!v || 'O campo tipo de insumo é obrigatório',
         ],
         descricao: '',
         descricaoRules: [
           v => !!v || 'O campo titulo é obrigatório',
         ],
-        area: '',
-        areaRules: [
-          v => !!v || 'O campo titulo é obrigatório',
-        ],
       }
     }),
     computed: {
-      myHarvests() {
-        return this.$store.getters.myHarvests
+      myInsumos() {
+        getInsumos(this.$route.params.safra_id)
+          .then(res => {
+            return res
+          })
+          .catch(error => {
+            return error
+          })
       },
       currentUser(){
         return this.$store.getters.currentUser
+      },
+      insumoTypes(){
+        getTypesInsumos()
+          .then(res => {
+            let array = []
+            res.map(i => array.push({text: i.descricao, value: i.id }))
+            return array
+          })
+          .catch(error => {
+            return error
+          })
       }
     },
     methods: {
       cleanForm(){
-        this.addHarvestForm.descricao = ''
-        this.addHarvestForm.titulo = ''
-        this.addHarvestForm.area = ''
+        this.addInsumoForm.descricao = ''
+        this.addInsumoForm.insumos_tipo_id = ''
       },
-      addHarvest() {
+      addInsumo() {
         this.openModal = !this.openModal
         this.cleanForm()
       },
-      accessHarvest(harvest) {
-        this.$router.push({path: '/lavoura/'+harvest.id})
+      registerInsumo(){
+      
       },
-      editHarvest(values) {
-        this.openModal = !this.openModal
-        this.editModal = true
-        this.modalTitle = 'Editar '+ values.titulo,
-        this.addHarvestForm = values
-      },
-      getMyHarvests() {
-        this.$store.dispatch('getMyHarvests')
-        let user  = this.$store.getters.currentUser
-        getMyHarvests(user)
-          .then(res => {
-            this.$store.commit('getMyHarvestsSuccess', res)
-          })
-          .catch(error => {
-            this.$store.commit('getMyHarvestsFailed', {error})
-          })
-      },
-      registerHarvest(){
-        this.$store.dispatch('registerHarvest')
-        let user  = this.$store.getters.currentUser
-        storeHarvest({...this.addHarvestForm, user_id: user.id})
-          .then(res => {
-            this.$store.commit('registerSuccessHarvest', res)
-            this.openModal = false
-          })
-          .catch(error => {
-            this.$store.commit('registerHarvestFailed', {error})
-            alert(error)
-          })
-      },
-      updateHarvest(){
-        this.$store.dispatch('updateHarvest')
-        let user  = this.$store.getters.currentUser
-        updateHarvest({...this.addHarvestForm, user_id: user.id})
-          .then(res => {
-            this.$store.commit('updateSuccessHarvest', res)
-            this.openModal = false
-          })
-          .catch(error => {
-            this.$store.commit('updateHarvestFailed', {error})
-            alert(error)
-          })
-      }
-    },
-    created: function() {
-      this.getMyHarvests();
     }
   }
 </script>
@@ -199,5 +161,4 @@
   .myLavouras {
     font-size: 1.5rem !important;
   }
-
 </style>
