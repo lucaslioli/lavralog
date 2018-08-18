@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Insumo;
 
 class InsumoController extends Controller
 {
@@ -12,19 +13,12 @@ class InsumoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
+    {   
+        $insumo = Insumo::all();
+
+        return response()->json($insumo);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -34,7 +28,15 @@ class InsumoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $insumo = Insumo::create([
+            'descricao' => $request->descricao,
+            'insumos_tipo_id' => $request->insumos_tipo_id
+        ]);
+
+        return response()->json([
+            'msg' => 'Insumo criado com sucesso!',
+            'insumo' => $insumo
+        ]);
     }
 
     /**

@@ -47,7 +47,14 @@ Route::group(['prefix' => 'unidade'], function ($router) {
 
 Route::group(['prefix' => 'insumo_tipo'], function ($router){
 
-    Route::get('',  'InsumoTipoController@index');
+    Route::get('', 'InsumoTipoController@index');
     Route::get('{insumo_tipo}', 'InsumoTipoController@show');
+
+});
+
+Route::group(['prefix' => 'insumo'], function ($router){
+
+    Route::get('', 'InsumoController@index');
+    Route::post('store', 'InsumoController@store');
 
 });
