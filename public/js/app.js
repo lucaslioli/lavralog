@@ -34902,12 +34902,21 @@ var index_esm = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_auth_Login___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_auth_Login__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_auth_RegisterUser__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_auth_RegisterUser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_auth_RegisterUser__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Harvest__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Harvest___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Harvest__);
+
 
 
 
 var routes = [{
   path: '/',
   component: __WEBPACK_IMPORTED_MODULE_0__components_Home___default.a,
+  meta: {
+    requiresAuth: true
+  }
+}, {
+  path: '/lavoura/:id',
+  component: __WEBPACK_IMPORTED_MODULE_3__components_Harvest___default.a,
   meta: {
     requiresAuth: true
   }
@@ -35005,7 +35014,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n#lateral .v-btn--floating[data-v-6707e3d4] {\n  margin: 0 0 16px 16px;\n}\n\n", ""]);
+exports.push([module.i, "\n#lateral .v-btn--floating[data-v-6707e3d4] {\n  margin: 0 0 16px 16px;\n}\n.myLavouras[data-v-6707e3d4] {\n  font-size: 1.5rem !important;\n}\n\n", ""]);
 
 // exports
 
@@ -35052,7 +35061,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_harvest__ = __webpack_require__(74);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-//
 //
 //
 //
@@ -35195,6 +35203,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.openModal = !this.openModal;
       this.cleanForm();
     },
+    accessHarvest: function accessHarvest(harvest) {
+      this.$router.push({ path: '/lavoura/' + harvest.id });
+    },
     editHarvest: function editHarvest(values) {
       this.openModal = !this.openModal;
       this.editModal = true;
@@ -35259,11 +35270,9 @@ var render = function() {
         "v-layout",
         { attrs: { "align-space-between": "", column: "" } },
         [
-          _c("h5", { staticClass: "headline text-xs-center" }, [
+          _c("h6", { staticClass: "headline text-xs-center myLavouras" }, [
             _vm._v(" Minhas Lavouras ")
           ]),
-          _vm._v(" "),
-          _c("hr"),
           _vm._v(" "),
           _c("br"),
           _vm._v(" "),
@@ -35310,7 +35319,11 @@ var render = function() {
                               "v-btn",
                               {
                                 attrs: { flat: "", color: "green" },
-                                on: { click: function($event) {} }
+                                on: {
+                                  click: function($event) {
+                                    _vm.accessHarvest(harvest)
+                                  }
+                                }
                               },
                               [_vm._v("Acessar")]
                             ),
@@ -35365,7 +35378,7 @@ var render = function() {
                             "v-btn",
                             {
                               attrs: {
-                                color: "green",
+                                color: "amber darken-1",
                                 dark: "",
                                 fab: "",
                                 fixed: "",
@@ -35990,6 +36003,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'main-app',
@@ -36006,6 +36020,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     logout: function logout() {
       this.$store.commit('logout');
       this.$router.push('/login');
+    },
+    home: function home() {
+      this.$router.push('/');
     }
   },
   computed: {
@@ -56162,7 +56179,9 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
     isLoggedIn: !!user,
     loading: false,
     auth_error: null,
-    myHarvests: []
+    myHarvests: [],
+    safras: [],
+    units: []
   },
   getters: {
     welcome: function welcome(state) {
@@ -56170,6 +56189,12 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
     },
     myHarvests: function myHarvests(state) {
       return state.myHarvests;
+    },
+    units: function units(state) {
+      return state.units;
+    },
+    safras: function safras(state) {
+      return state.safras;
     },
     isLoading: function isLoading(state) {
       return state.loading;
@@ -56197,11 +56222,27 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
       state.loading = true;
       state.auth_error = null;
     },
+    registerSafra: function registerSafra(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
     updateHarvest: function updateHarvest(state) {
       state.loading = true;
       state.auth_error = null;
     },
+    updateSafra: function updateSafra(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
     getMyHarvests: function getMyHarvests(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
+    getSafras: function getSafras(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
+    getUnits: function getUnits(state) {
       state.loading = true;
       state.auth_error = null;
     },
@@ -56222,6 +56263,11 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
       state.auth_error = null;
       state.myHarvests = [].concat(_toConsumableArray(state.myHarvests), [payload.lavoura ? payload.lavoura : '']);
     },
+    registerSuccessSafras: function registerSuccessSafras(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+      state.safras = [].concat(_toConsumableArray(state.safras), [payload.safra ? payload.safra : '']);
+    },
     updateSuccessHarvest: function updateSuccessHarvest(state, payload) {
       state.loading = false;
       state.auth_error = null;
@@ -56229,10 +56275,27 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
         return i.id !== payload.lavoura.id;
       })), [payload.lavoura]);
     },
+    updateSuccessSafra: function updateSuccessSafra(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+      state.safras = [].concat(_toConsumableArray(state.safras.filter(function (i) {
+        return i.id !== payload.safra.id;
+      })), [payload.safra]);
+    },
     getMyHarvestsSuccess: function getMyHarvestsSuccess(state, payload) {
       state.loading = false;
       state.auth_error = null;
-      state.myHarvests = [].concat(_toConsumableArray(state.myHarvests), _toConsumableArray(payload));
+      state.myHarvests = [].concat(_toConsumableArray(payload));
+    },
+    getSuccessUnit: function getSuccessUnit(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+      state.units = [].concat(_toConsumableArray(state.units), [payload.unidades ? payload.unidades : null]);
+    },
+    getSuccessSafra: function getSuccessSafra(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+      state.safras = payload;
     },
     loginFailed: function loginFailed(state, payload) {
       state.loading = false;
@@ -56246,11 +56309,27 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
       state.loading = false;
       state.auth_error = payload.error;
     },
+    registerSafraFailed: function registerSafraFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
     updateHarvestFailed: function updateHarvestFailed(state, payload) {
       state.loading = false;
       state.auth_error = payload.error;
     },
+    updateSafraFailed: function updateSafraFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
     getMyHarvestsFailed: function getMyHarvestsFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
+    getUnitsFailed: function getUnitsFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
+    getSafraFailed: function getSafraFailed(state, payload) {
       state.loading = false;
       state.auth_error = payload.error;
     },
@@ -56273,8 +56352,20 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
     updateHarvest: function updateHarvest(context) {
       context.commit("updateHarvest");
     },
+    registerSafra: function registerSafra(context) {
+      context.commit("registerSafra");
+    },
+    updateSafra: function updateSafra(context) {
+      context.commit("updateSafra");
+    },
     getMyHarvests: function getMyHarvests(context) {
       context.commit("getMyHarvests");
+    },
+    getUnits: function getUnits(context) {
+      context.commit("getUnits");
+    },
+    getSafras: function getSafras(context) {
+      context.commit("getSafras");
     }
   }
 });
@@ -56745,7 +56836,7 @@ var render = function() {
                   [
                     _c(
                       "v-list-tile",
-                      { on: { click: function($event) {} } },
+                      { on: { click: _vm.home } },
                       [
                         _c(
                           "v-list-tile-action",
@@ -56762,24 +56853,33 @@ var render = function() {
                       1
                     ),
                     _vm._v(" "),
-                    _c(
-                      "v-list-tile",
-                      { on: { click: function($event) {} } },
-                      [
-                        _c(
-                          "v-list-tile-action",
-                          [_c("v-icon", [_vm._v("contact_mail")])],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "v-list-tile-content",
-                          [_c("v-list-tile-title", [_vm._v("Contact")])],
+                    _vm.currentUser
+                      ? _c(
+                          "v-list-tile",
+                          {
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.logout($event)
+                              }
+                            }
+                          },
+                          [
+                            _c(
+                              "v-list-tile-action",
+                              [_c("v-icon", [_vm._v("lock_open")])],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-list-tile-content",
+                              [_c("v-list-tile-title", [_vm._v("Sair")])],
+                              1
+                            )
+                          ],
                           1
                         )
-                      ],
-                      1
-                    )
+                      : _vm._e()
                   ],
                   1
                 )
@@ -56807,7 +56907,11 @@ var render = function() {
             : _vm._e(),
           _vm._v(" "),
           _c("v-toolbar-title", [
-            _vm._v("Lavralog - " + _vm._s(_vm.currentUser.name) + " ")
+            _vm._v(
+              "Lavralog - " +
+                _vm._s(_vm.currentUser ? _vm.currentUser.name : "") +
+                " "
+            )
           ]),
           _vm._v(" "),
           _c("v-spacer"),
@@ -56839,21 +56943,15 @@ var render = function() {
                       1
                     )
                   ]
-                : [
-                    _c(
-                      "v-btn",
-                      {
-                        attrs: { flat: "" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.logout($event)
-                          }
-                        }
-                      },
-                      [_vm._v("Sair")]
-                    )
-                  ]
+                : _vm._e(),
+              _vm._v(" "),
+              _c("img", {
+                attrs: {
+                  src: __webpack_require__(80),
+                  width: 40,
+                  height: 40
+                }
+              })
             ],
             2
           )
@@ -56923,6 +57021,680 @@ var updateHarvest = function updateHarvest(fields) {
       res(response.data);
     }).catch(function (err) {
       rej("Não foi possível cadastrar sua lavoura");
+    });
+  });
+};
+
+/***/ }),
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */
+/***/ (function(module, exports) {
+
+module.exports = "/images/wSymbol48.png?23e0451ed2ed82e2587395a06f62e741";
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(82)
+}
+var normalizeComponent = __webpack_require__(4)
+/* script */
+var __vue_script__ = __webpack_require__(84)
+/* template */
+var __vue_template__ = __webpack_require__(85)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-4037e9fc"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Harvest.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4037e9fc", Component.options)
+  } else {
+    hotAPI.reload("data-v-4037e9fc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(83);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(12)("20736205", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4037e9fc\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Harvest.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-4037e9fc\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Harvest.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#lateral .v-btn--floating[data-v-4037e9fc] {\n  margin: 0 0 16px 16px;\n}\n.myLavouras[data-v-4037e9fc] {\n  font-size: 1.5rem !important;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 84 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_safra__ = __webpack_require__(86);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+
+  name: "Home",
+  data: function data() {
+    return {
+      fab: false,
+      openModal: false,
+      editModal: false,
+      modalTitle: 'Cadastrar uma Lavoura',
+      valid: false,
+      addSafraForm: {
+        titulo: '',
+        tituloRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }],
+        descricao: '',
+        descricaoRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }],
+        area: '',
+        areaRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }]
+      }
+    };
+  },
+  computed: {
+    mySafras: function mySafras() {
+      return this.$store.getters.safras;
+    },
+    currentUser: function currentUser() {
+      return this.$store.getters.currentUser;
+    },
+    currentHarvest: function currentHarvest() {
+      var _this = this;
+
+      return this.$store.getters.myHarvests.filter(function (i) {
+        return i.id == _this.$route.params.id;
+      })[0];
+    }
+  },
+  methods: {
+    cleanForm: function cleanForm() {
+      this.addSafraForm.descricao = '';
+      this.addSafraForm.titulo = '';
+      this.addSafraForm.area = '';
+    },
+    addSafra: function addSafra() {
+      this.openModal = !this.openModal;
+      this.cleanForm();
+    },
+    editSafra: function editSafra(values) {
+      this.openModal = !this.openModal;
+      this.editModal = true;
+      this.modalTitle = 'Editar ' + values.titulo, this.addSafraForm = values;
+    },
+    getMySafras: function getMySafras() {
+      var _this2 = this;
+
+      this.$store.dispatch('getSafras');
+
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["a" /* getMySafras */])(this.$route.params.id).then(function (res) {
+        _this2.$store.commit('getSuccessSafra', res);
+      }).catch(function (error) {
+        _this2.$store.commit('getSafraFailed', { error: error });
+      });
+    },
+    registerSafra: function registerSafra() {
+      var _this3 = this;
+
+      this.$store.dispatch('registerSafra');
+      var user = this.$store.getters.currentUser;
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["b" /* storeSafra */])(_extends({}, this.addSafraForm, { user_id: user.id })).then(function (res) {
+        _this3.$store.commit('registerSuccessSafra', res);
+        _this3.openModal = false;
+      }).catch(function (error) {
+        _this3.$store.commit('registerSafraFailed', { error: error });
+        alert(error);
+      });
+    },
+    updateSafra: function updateSafra() {
+      var _this4 = this;
+
+      this.$store.dispatch('updateSafra');
+      var user = this.$store.getters.currentUser;
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_safra__["c" /* updateSafra */])(_extends({}, this.addSafraForm, { user_id: user.id })).then(function (res) {
+        _this4.$store.commit('updateSuccessSafra', res);
+        _this4.openModal = false;
+      }).catch(function (error) {
+        _this4.$store.commit('updateSafraFailed', { error: error });
+        alert(error);
+      });
+    }
+  },
+  created: function created() {
+    this.getMySafras();
+  }
+});
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-container",
+    { attrs: { fluid: "", "fill-height": "" } },
+    [
+      _c(
+        "v-layout",
+        { attrs: { "align-space-between": "", column: "" } },
+        [
+          _c("h6", { staticClass: "headline text-xs-center myLavouras" }, [
+            _vm._v(" Lavoura " + _vm._s(_vm.currentHarvest.titulo) + " ")
+          ]),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _vm.mySafras.length
+            ? _vm._l(_vm.mySafras, function(safra, key) {
+                return _c(
+                  "v-layout",
+                  { key: key },
+                  [
+                    _c(
+                      "v-flex",
+                      { staticClass: "pa-2", attrs: { xs12: "" } },
+                      [
+                        _c(
+                          "v-card",
+                          [
+                            _c(
+                              "v-card-title",
+                              { attrs: { "primary-title": "" } },
+                              [
+                                _c("v-flex", { attrs: { column: "" } }, [
+                                  _c("div", [
+                                    _c("h3", { staticClass: "headline mb-0" }, [
+                                      _vm._v(_vm._s(safra.ano))
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "h6",
+                                      { staticClass: "subheading mb-0" },
+                                      [
+                                        _c("b", [_vm._v("Cultura:")]),
+                                        _vm._v(" " + _vm._s(safra.cultura))
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "h6",
+                                      { staticClass: "subheading mb-0" },
+                                      [
+                                        _c("b", [_vm._v("Unidade:")]),
+                                        _vm._v(" " + _vm._s(safra))
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-card-actions",
+                              [
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { flat: "", color: "orange" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.editSafra(safra)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Editar")]
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              })
+            : [
+                _c(
+                  "h6",
+                  { staticClass: "headline text-xs-center myLavouras" },
+                  [_vm._v(" Nenhuma Safra cadastrada para esta lavoura")]
+                )
+              ],
+          _vm._v(" "),
+          _c(
+            "v-content",
+            [
+              _c(
+                "v-container",
+                {
+                  attrs: {
+                    "fill-height": "",
+                    "align-center": "",
+                    "justify-center": ""
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    { attrs: { id: "lateral" } },
+                    [
+                      _c(
+                        "v-fab-transition",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                color: "amber darken-1",
+                                dark: "",
+                                fab: "",
+                                fixed: "",
+                                bottom: "",
+                                right: "",
+                                "justify-center": ""
+                              },
+                              on: {
+                                click: function($event) {
+                                  $event.stopPropagation()
+                                  return _vm.addSafra($event)
+                                }
+                              },
+                              model: {
+                                value: _vm.fab,
+                                callback: function($$v) {
+                                  _vm.fab = $$v
+                                },
+                                expression: "fab"
+                              }
+                            },
+                            [_c("v-icon", [_vm._v("add")])],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-dialog",
+            {
+              model: {
+                value: _vm.openModal,
+                callback: function($$v) {
+                  _vm.openModal = $$v
+                },
+                expression: "openModal"
+              }
+            },
+            [
+              _c(
+                "v-flex",
+                { attrs: { xs12: "" } },
+                [
+                  _c(
+                    "v-card",
+                    [
+                      _c("v-card-title", { attrs: { "primary-title": "" } }, [
+                        _c("h3", { staticClass: "headline mb-0" }, [
+                          _vm._v(_vm._s(_vm.modalTitle))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "pa-2" },
+                        [
+                          _c(
+                            "v-form",
+                            {
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  _vm.editModal
+                                    ? _vm.updateSafra()
+                                    : _vm.registerSafra()
+                                }
+                              },
+                              model: {
+                                value: _vm.valid,
+                                callback: function($$v) {
+                                  _vm.valid = $$v
+                                },
+                                expression: "valid"
+                              }
+                            },
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  rules: _vm.addSafraForm.tituloRules,
+                                  label: "Titulo da Safra",
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addSafraForm.titulo,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.addSafraForm, "titulo", $$v)
+                                  },
+                                  expression: "addSafraForm.titulo"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "Ano da Safra",
+                                  rules: _vm.addSafraForm.anoRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addSafraForm.ano,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.addSafraForm, "ano", $$v)
+                                  },
+                                  expression: "addSafraForm.ano"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "Unidade de medida da Produção",
+                                  rules: _vm.addSafraForm.unitRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addSafraForm.unit,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.addSafraForm, "unit", $$v)
+                                  },
+                                  expression: "addSafraForm.unit"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    disabled: !_vm.valid,
+                                    type: "submit"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                Salvar\n              "
+                                  )
+                                ]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        2
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4037e9fc", module.exports)
+  }
+}
+
+/***/ }),
+/* 86 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getMySafras; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return storeSafra; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return updateSafra; });
+var getMySafras = function getMySafras(harvestId) {
+  return new Promise(function (res, rej) {
+    axios.get("/api/safra/lavoura/" + harvestId).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível buscar suas safras");
+    });
+  });
+};
+
+var storeSafra = function storeSafra(fields) {
+  return new Promise(function (res, rej) {
+    var titulo = fields.titulo,
+        ano = fields.ano,
+        lavoura_id = fields.lavoura_id,
+        unidade_id = fields.unidade_id;
+
+    axios.post("/api/lavoura/store", { titulo: titulo, ano: ano, lavoura_id: lavoura_id, unidade_id: unidade_id }).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível cadastrar sua safra");
+    });
+  });
+};
+
+var updateSafra = function updateSafra(fields) {
+  return new Promise(function (res, rej) {
+    var titulo = fields.titulo,
+        ano = fields.ano,
+        lavoura_id = fields.lavoura_id,
+        unidade_id = fields.unidade_id;
+
+    axios.put("/api/safra/" + id, { titulo: titulo, ano: ano, lavoura_id: lavoura_id, unidade_id: unidade_id }).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível editar sua safra");
     });
   });
 };
