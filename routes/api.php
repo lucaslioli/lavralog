@@ -18,6 +18,17 @@ Route::group(['prefix' => 'auth'], function ($router) {
 
 });
 
+Route::group(['prefix' => 'incidente'], function ($router) {
+
+    Route::get('safra/{safra}', 'IncidenteController@index');
+    Route::post('store', 'IncidenteController@store');
+    Route::get('{incidente}', 'IncidenteController@show');
+    Route::put('{incidente}', 'IncidenteController@update');
+    Route::delete('{incidente}', 'IncidenteController@destroy');
+
+});
+
+
 Route::group(['prefix' => 'lavoura'], function ($router) {
 
     Route::get('user/{user}', 'LavouraController@index');
