@@ -37,6 +37,8 @@ Route::group(['prefix' => 'lavoura'], function ($router) {
     Route::put('{lavoura}', 'LavouraController@update');
     Route::delete('{lavoura}', 'LavouraController@destroy');
 
+    Route::get('{lavoura}/relatorioLav', 'RelatorioController@lavoura');
+    Route::get('{safra}/relatorioSaf', 'RelatorioController@insumosPorSafra');
 });
 
 Route::group(['prefix' => 'safra'], function ($router) {
@@ -48,6 +50,8 @@ Route::group(['prefix' => 'safra'], function ($router) {
     Route::delete('{safra}', 'SafraController@destroy');
 
     Route::get('insumos/{safra}', 'SafraController@insumos');
+    Route::post('{safra}/insumo/{insumo}', 'SafraController@newInsumoSafra');
+    Route::delete('{safra}/insumo/{insumo}', 'SafraController@deleteInsumoSafra');
 
 });
 
