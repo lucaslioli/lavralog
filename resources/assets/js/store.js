@@ -9,10 +9,14 @@ export default {
     isLoggedIn: !!user,
     loading: false,
     auth_error: null,
+    myHarvests: []
   },
   getters: {
     welcome(state) {
       return state.welcomeMessage
+    },
+    myHarvests(state) {
+      return state.myHarvests
     },
     isLoading(state) {
       return state.loading
@@ -36,6 +40,10 @@ export default {
       state.loading = true
       state.auth_error = null
     },
+    getMyHarvests(state) {
+      state.loading = true
+      state.auth_error = null
+    },
 
     loginSuccess(state, payload) {
       state.loading = false
@@ -49,12 +57,21 @@ export default {
       state.loading = false
       state.auth_error = null
     },
+    getMyHarvestsSuccess(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.myHarvests = payload.myHarvests
+    },
 
     loginFailed(state, payload) {
       state.loading = false
       state.auth_error = payload.error
     },
     registerFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
+    getMyHarvestsFailed(state, payload) {
       state.loading = false
       state.auth_error = payload.error
     },
@@ -72,6 +89,10 @@ export default {
 
     register(context) {
       context.commit("register")
+    },
+
+    getMyHarvests(context){
+      context.commit("getMyHarvests")
     }
   }
 }
