@@ -35050,6 +35050,57 @@ module.exports = function listToStyles (parentId, list) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_harvest__ = __webpack_require__(74);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -35105,7 +35156,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   name: "Home",
   data: function data() {
     return {
-      fab: false
+      fab: false,
+      openModal: false,
+      editModal: false,
+      modalTitle: 'Cadastrar uma Lavoura',
+      valid: false,
+      addHarvestForm: {
+        titulo: '',
+        tituloRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }],
+        descricao: '',
+        descricaoRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }],
+        area: '',
+        areaRules: [function (v) {
+          return !!v || 'O campo titulo é obrigatório';
+        }]
+      }
     };
   },
   computed: {
@@ -35117,7 +35186,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   methods: {
-    addHarvest: function addHarvest() {},
+    cleanForm: function cleanForm() {
+      this.addHarvestForm.descricao = '';
+      this.addHarvestForm.titulo = '';
+      this.addHarvestForm.area = '';
+    },
+    addHarvest: function addHarvest() {
+      this.openModal = !this.openModal;
+      this.cleanForm();
+    },
+    editHarvest: function editHarvest(values) {
+      this.openModal = !this.openModal;
+      this.editModal = true;
+      this.modalTitle = 'Editar ' + values.titulo, this.addHarvestForm = values;
+    },
     getMyHarvests: function getMyHarvests() {
       var _this = this;
 
@@ -35127,6 +35209,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.$store.commit('getMyHarvestsSuccess', res);
       }).catch(function (error) {
         _this.$store.commit('getMyHarvestsFailed', { error: error });
+      });
+    },
+    registerHarvest: function registerHarvest() {
+      var _this2 = this;
+
+      this.$store.dispatch('registerHarvest');
+      var user = this.$store.getters.currentUser;
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_harvest__["b" /* storeHarvest */])(_extends({}, this.addHarvestForm, { user_id: user.id })).then(function (res) {
+        _this2.$store.commit('registerSuccessHarvest', res);
+        _this2.openModal = false;
+      }).catch(function (error) {
+        _this2.$store.commit('registerHarvestFailed', { error: error });
+        alert(error);
+      });
+    },
+    updateHarvest: function updateHarvest() {
+      var _this3 = this;
+
+      this.$store.dispatch('updateHarvest');
+      var user = this.$store.getters.currentUser;
+      Object(__WEBPACK_IMPORTED_MODULE_0__helpers_harvest__["c" /* updateHarvest */])(_extends({}, this.addHarvestForm, { user_id: user.id })).then(function (res) {
+        _this3.$store.commit('updateSuccessHarvest', res);
+        _this3.openModal = false;
+      }).catch(function (error) {
+        _this3.$store.commit('updateHarvestFailed', { error: error });
+        alert(error);
       });
     }
   },
@@ -35149,9 +35257,11 @@ var render = function() {
     [
       _c(
         "v-layout",
-        { attrs: { "align-space-around": "", column: "" } },
+        { attrs: { "align-space-between": "", column: "" } },
         [
-          _c("div", { staticClass: "headline" }, [_vm._v(" Minhas Lavouras ")]),
+          _c("h5", { staticClass: "headline text-xs-center" }, [
+            _vm._v(" Minhas Lavouras ")
+          ]),
           _vm._v(" "),
           _c("hr"),
           _vm._v(" "),
@@ -35164,18 +35274,62 @@ var render = function() {
               [
                 _c(
                   "v-flex",
-                  { attrs: { xs12: "" } },
+                  { staticClass: "pa-2", attrs: { xs12: "" } },
                   [
                     _c(
                       "v-card",
                       [
-                        _c("v-card-title", { attrs: { "primary-title": "" } }, [
-                          _c("div", [
-                            _c("h3", { staticClass: "headline mb-0" }, [
-                              _vm._v(_vm._s(harvest.name))
+                        _c(
+                          "v-card-title",
+                          { attrs: { "primary-title": "" } },
+                          [
+                            _c("v-flex", { attrs: { column: "" } }, [
+                              _c("div", [
+                                _c("h3", { staticClass: "headline mb-0" }, [
+                                  _vm._v(_vm._s(harvest.titulo))
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("div", [
+                                _c("h6", { staticClass: "subheading mb-0" }, [
+                                  _c("b", [_vm._v("Área:")]),
+                                  _vm._v(
+                                    " " + _vm._s(harvest.area) + " hectares"
+                                  )
+                                ])
+                              ])
                             ])
-                          ])
-                        ])
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-actions",
+                          [
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { flat: "", color: "green" },
+                                on: { click: function($event) {} }
+                              },
+                              [_vm._v("Acessar")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { flat: "", color: "orange" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.editHarvest(harvest)
+                                  }
+                                }
+                              },
+                              [_vm._v("Editar")]
+                            )
+                          ],
+                          1
+                        )
                       ],
                       1
                     )
@@ -35221,7 +35375,7 @@ var render = function() {
                               },
                               on: {
                                 click: function($event) {
-                                  $event.preventDefault()
+                                  $event.stopPropagation()
                                   return _vm.addHarvest($event)
                                 }
                               },
@@ -35243,6 +35397,134 @@ var render = function() {
                     1
                   )
                 ]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-dialog",
+            {
+              model: {
+                value: _vm.openModal,
+                callback: function($$v) {
+                  _vm.openModal = $$v
+                },
+                expression: "openModal"
+              }
+            },
+            [
+              _c(
+                "v-flex",
+                { attrs: { xs12: "" } },
+                [
+                  _c(
+                    "v-card",
+                    [
+                      _c("v-card-title", { attrs: { "primary-title": "" } }, [
+                        _c("h3", { staticClass: "headline mb-0" }, [
+                          _vm._v(_vm._s(_vm.modalTitle))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "pa-2" },
+                        [
+                          _c(
+                            "v-form",
+                            {
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  _vm.editModal
+                                    ? _vm.updateHarvest()
+                                    : _vm.registerHarvest()
+                                }
+                              },
+                              model: {
+                                value: _vm.valid,
+                                callback: function($$v) {
+                                  _vm.valid = $$v
+                                },
+                                expression: "valid"
+                              }
+                            },
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  rules: _vm.addHarvestForm.tituloRules,
+                                  label: "Titulo da Lavoura",
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addHarvestForm.titulo,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.addHarvestForm, "titulo", $$v)
+                                  },
+                                  expression: "addHarvestForm.titulo"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "Descrição da Lavoura",
+                                  rules: _vm.addHarvestForm.descricaoRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addHarvestForm.descricao,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.addHarvestForm,
+                                      "descricao",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "addHarvestForm.descricao"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "Área da Lavoura",
+                                  rules: _vm.addHarvestForm.areaRules,
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.addHarvestForm.area,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.addHarvestForm, "area", $$v)
+                                  },
+                                  expression: "addHarvestForm.area"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    disabled: !_vm.valid,
+                                    type: "submit"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                Salvar\n              "
+                                  )
+                                ]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
               )
             ],
             1
@@ -55867,6 +56149,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__helpers_auth__ = __webpack_require__(13);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 
 
 var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUser */])();
@@ -55909,6 +56193,14 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
       state.loading = true;
       state.auth_error = null;
     },
+    registerHarvest: function registerHarvest(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
+    updateHarvest: function updateHarvest(state) {
+      state.loading = true;
+      state.auth_error = null;
+    },
     getMyHarvests: function getMyHarvests(state) {
       state.loading = true;
       state.auth_error = null;
@@ -55925,16 +56217,36 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
       state.loading = false;
       state.auth_error = null;
     },
+    registerSuccessHarvest: function registerSuccessHarvest(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+      state.myHarvests = [].concat(_toConsumableArray(state.myHarvests), [payload.lavoura ? payload.lavoura : '']);
+    },
+    updateSuccessHarvest: function updateSuccessHarvest(state, payload) {
+      state.loading = false;
+      state.auth_error = null;
+      state.myHarvests = [].concat(_toConsumableArray(state.myHarvests.filter(function (i) {
+        return i.id !== payload.lavoura.id;
+      })), [payload.lavoura]);
+    },
     getMyHarvestsSuccess: function getMyHarvestsSuccess(state, payload) {
       state.loading = false;
       state.auth_error = null;
-      state.myHarvests = payload.myHarvests;
+      state.myHarvests = [].concat(_toConsumableArray(state.myHarvests), _toConsumableArray(payload));
     },
     loginFailed: function loginFailed(state, payload) {
       state.loading = false;
       state.auth_error = payload.error;
     },
     registerFailed: function registerFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
+    registerHarvestFailed: function registerHarvestFailed(state, payload) {
+      state.loading = false;
+      state.auth_error = payload.error;
+    },
+    updateHarvestFailed: function updateHarvestFailed(state, payload) {
       state.loading = false;
       state.auth_error = payload.error;
     },
@@ -55954,6 +56266,12 @@ var user = Object(__WEBPACK_IMPORTED_MODULE_0__helpers_auth__["a" /* getLocalUse
     },
     register: function register(context) {
       context.commit("register");
+    },
+    registerHarvest: function registerHarvest(context) {
+      context.commit("registerHarvest");
+    },
+    updateHarvest: function updateHarvest(context) {
+      context.commit("updateHarvest");
     },
     getMyHarvests: function getMyHarvests(context) {
       context.commit("getMyHarvests");
@@ -56566,12 +56884,45 @@ if (false) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getMyHarvests; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return storeHarvest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return updateHarvest; });
 var getMyHarvests = function getMyHarvests(user) {
   return new Promise(function (res, rej) {
     axios.get("/api/lavoura/user/" + user.id).then(function (response) {
       res(response.data);
     }).catch(function (err) {
       rej("Não foi possível buscar suas lavouras");
+    });
+  });
+};
+
+var storeHarvest = function storeHarvest(fields) {
+  return new Promise(function (res, rej) {
+    var titulo = fields.titulo,
+        descricao = fields.descricao,
+        area = fields.area,
+        user_id = fields.user_id;
+
+    axios.post("/api/lavoura/store", { titulo: titulo, descricao: descricao, area: area, user_id: user_id }).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível cadastrar sua lavoura");
+    });
+  });
+};
+
+var updateHarvest = function updateHarvest(fields) {
+  return new Promise(function (res, rej) {
+    var titulo = fields.titulo,
+        descricao = fields.descricao,
+        area = fields.area,
+        user_id = fields.user_id,
+        id = fields.id;
+
+    axios.put("/api/lavoura/" + id, { titulo: titulo, descricao: descricao, area: area, user_id: user_id }).then(function (response) {
+      res(response.data);
+    }).catch(function (err) {
+      rej("Não foi possível cadastrar sua lavoura");
     });
   });
 };

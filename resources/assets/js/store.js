@@ -40,6 +40,14 @@ export default {
       state.loading = true
       state.auth_error = null
     },
+    registerHarvest(state) {
+      state.loading = true
+      state.auth_error = null
+    },
+    updateHarvest(state) {
+      state.loading = true
+      state.auth_error = null
+    },
     getMyHarvests(state) {
       state.loading = true
       state.auth_error = null
@@ -57,10 +65,21 @@ export default {
       state.loading = false
       state.auth_error = null
     },
+    registerSuccessHarvest(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.myHarvests = [ ...state.myHarvests, payload.lavoura ? payload.lavoura : '' ]
+    },
+    updateSuccessHarvest(state, payload) {
+      state.loading = false
+      state.auth_error = null
+      state.myHarvests = [ ...state.myHarvests.filter(i => i.id !== payload.lavoura.id), payload.lavoura ]
+    },
+
     getMyHarvestsSuccess(state, payload) {
       state.loading = false
       state.auth_error = null
-      state.myHarvests = payload.myHarvests
+      state.myHarvests = [...state.myHarvests, ...payload]
     },
 
     loginFailed(state, payload) {
@@ -68,6 +87,14 @@ export default {
       state.auth_error = payload.error
     },
     registerFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
+    registerHarvestFailed(state, payload) {
+      state.loading = false
+      state.auth_error = payload.error
+    },
+    updateHarvestFailed(state, payload) {
       state.loading = false
       state.auth_error = payload.error
     },
@@ -89,6 +116,14 @@ export default {
 
     register(context) {
       context.commit("register")
+    },
+
+    registerHarvest(context) {
+      context.commit("registerHarvest")
+    },
+
+    updateHarvest(context) {
+      context.commit("updateHarvest")
     },
 
     getMyHarvests(context){
